@@ -90,6 +90,20 @@ def product_create():
   # Either first load or validation error at this point.
   return render_template('product/edit.html', form=form)
 
+@app.route( '/products/<product_id>/edit/',methods=['GET', 'POST'])
+@login_required
+def product_edit(product_id):
+  """Provide HTML form to edit a product."""
+  form = ProductForm(request.form)
+  if request.method == 'POST' and form.validate():
+ 
+    mongo.db.products.update_one({'_id':ObjectId(product_id)},{'$set':{'name':request.form['name'], 'description':request.form['description'], 'price':request.form['price']}})
+    
+    # Success. Send user back to full product list.
+    return redirect(url_for('products_list'))
+  # Either first load or validation error at this point.
+  return render_template('product/edit.html', form=form)
+
 from bson.objectid import ObjectId
 
 @app.route('/products/<product_id>/')
