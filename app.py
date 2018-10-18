@@ -16,12 +16,6 @@ mongo = PyMongo(app)
 
 
 
-@app.route(
-  '/products/<product_id>/edit/',
-  methods=['GET', 'POST'])
-@login_required
-def product_edit(product_id):
-  return 'Form to edit product #.'.format(product_id)
 
 @app.route( '/products/create/', methods=['GET', 'POST'])
 def product():
@@ -97,7 +91,9 @@ def product_edit(product_id):
   form = ProductForm(request.form)
   if request.method == 'POST' and form.validate():
  
-    mongo.db.products.update_one({'_id':ObjectId(product_id)},{'$set':{'name':request.form['name'], 'description':request.form['description'], 'price':request.form['price']}})
+    mongo.db.products.update_one({'_id':ObjectId(product_id)},{'$set':{'name':request.form['name'], 
+                                                                       'description':request.form['description'],
+                                                                       'price':request.form['price']}})
     
     # Success. Send user back to full product list.
     return redirect(url_for('products_list'))
